@@ -8,7 +8,6 @@ import time
 counter = 0 #a constant to print out the plots
 v = 1 #difusion constant
 scale = 100
-#noise = np.loadtxt('/Users/nosratullah/Documents/Lectures/iasbs/season 3/Numerical physics/tasks/task 4/heatEq/exam/noise.txt')
 #this part aims to creat a tridiagonal matrix
 coeffMat = np.zeros((scale,scale)) #making the coefficent matrix
 diameter0 = np.ones(scale)*(1+2*v) #diagonal matrix
@@ -24,16 +23,16 @@ coeffMat
 sparsCoeffMat = sparse.coo_matrix(coeffMat)
 ##############################################
 #initial matrix valuse of the line (h)
-knownMat = np.zeros(scale)
+knownMat = np.zeros(scale) 
 unknownMat = np.zeros(scale)
-noise = np.random.normal(0,0.9,scale)
-meanValue = []
-itterations = 20000
+noise = np.random.normal(0,0.9,scale) #adding noise due to thermal effects
+meanValue = [] #to store the mean value of h each itteration
+itterations = 20000 #number of times the linear algebra system would solve
 w = []
 for i in range(0,itterations):
-    unknownMat = spla.spsolve(sparsCoeffMat, knownMat)
+    unknownMat = spla.spsolve(sparsCoeffMat, knownMat) #solving the system by sparse methode to save times
     #unknownMat[scale-1] = unknownMat[0]
-    noise = np.random.normal(0,0.9,scale)
+    noise = np.random.normal(0,0.9,scale) #adding noise due to thermal effects
     unknownMat = unknownMat + noise
     knownMat[1:scale-1] = unknownMat[1:scale-1]
     meanValue.append(np.mean(unknownMat))
@@ -44,7 +43,7 @@ for i in range(0,itterations):
         for j in range(0,scale-1):
             temporalConst += (abs(unknownMat[j] - np.mean(unknownMat)))**2
 
-        w.append(np.sqrt(temporalConst*1/scale))
+        w.append(np.sqrt(temporalConst*1/scale)) #store the w value
 
     if (i%200==0): #to reduce the number of plots for every 100 loops
         counter += 1
@@ -57,7 +56,7 @@ for i in range(0,itterations):
         plt.ylim(-14,14)
         plt.plot(unknownMat)
         #plt.legend(loc='upper right')
-        #plt.savefig('/gif/{}.png'.format(counter))
+        #plt.savefig('/gif/{}.png'.format(counter)) #in case of creating gif
         plt.pause(0.01)
         time.sleep(0.01)
 
